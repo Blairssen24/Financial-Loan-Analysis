@@ -13,7 +13,7 @@ Comprehensive analysis of a bank loan portfolio to evaluate funding trends, repa
 4. [Tools & Technologies](#4-tools--technologies)  
 5. [Dataset Overview](#5-dataset-overview)  
 6. [Data Preparation & Cleaning (SQL)](#6-data-preparation--cleaning-sql)  
-7. [KPIs & SQL Queries](#7-kpis--sql-queries)  
+7. [KPIs &  Case Study Questions](#7-kpis--case-study-questions)  
    - [Loan Portfolio KPIs](#loan-portfolio-kpis)  
    - [Performance Metrics](#performance-metrics)  
 8. [Key Insights & Observations](#8-key-insights--observations)  
@@ -176,6 +176,309 @@ Checked column quality, unique IDs, and outliers in Power BI Power Query view.
 
 ---
 
+## 7. KPIs & Case Study Questions
+
+### 📌 A. Loan Portfolio Volume KPIs
+
+### **1. What is the total number of loan applications received in 2021?**
+
+#### ✅ Python Solution
+```python
+total_loan_application = df['id'].count()
+print("Total Loan Applications:", total_loan_application)
+```
+<img width="198" height="53" alt="total_loan" src="https://github.com/user-attachments/assets/f9f45536-f349-4fb4-8d4d-9c4781cdabc9" />
+
+<img width="1256" height="640" alt="total_loan_chart" src="https://github.com/user-attachments/assets/77bdf80f-3577-406e-98d5-0c9ec11cbe62" />
+
+>The total loan applications recorded for 2021 is 38,576.
+>This high application volume reflects strong customer demand and signals increased workload for underwriting and risk evaluation.
+
+### **2️. What is the Total Funded Amount**
+```python
+total_funded_amount = df['loan_amount'].sum()
+print("Total Funded Amount:", total_funded_amount)
+```
+<img width="182" height="42" alt="total_funded" src="https://github.com/user-attachments/assets/77c8e255-09ea-4788-a7d9-22174c053904" />
+<img width="1253" height="615" alt="Total_funded_amount" src="https://github.com/user-attachments/assets/4bc13467-7475-4a9b-8769-2ca0f2684cdf" />
+
+> The institution disbursed a total of $435.76M in loans for 2021.
+This represents the total capital issued to borrowers and forms the basis for interest revenue, repayment performance, and risk exposure evaluations.
+
+### *3. What is the total amount received from all borrowers in 2021?*
+```python
+total_amount_received = df['total_payment'].sum()
+print("Total Amount Received:", total_amount_received)
+```
+<img width="198" height="50" alt="total_amount" src="https://github.com/user-attachments/assets/ba5e3ab4-0f55-4efc-9946-28df1245e559" />
+
+<img width="1189" height="590" alt="total_amount_chart" src="https://github.com/user-attachments/assets/39ab0119-74c3-4ee7-ac5b-dd585104ee2d" />
+
+> Borrowers repaid a total of $473.07M in 2021, which is $37.3M more than the total loan amount issued.
+This positive gap represents interest income + fees, indicating strong repayment performance and profitability for the lending institution.
+
+### *4. What is the average interest rate applied to loans issued in 2021?*
+```python
+avg_interest_rate = df['int_rate'].mean()
+print("Average Interest Rate:", avg_interest_rate)
+```
+<img width="132" height="47" alt="avg_int" src="https://github.com/user-attachments/assets/10b70fd4-9661-4457-aab5-4bfc23e1ff40" />
+
+> The average interest rate for all loans is 12.05%, indicating that the loan portfolio is priced at a moderate–high rate.
+> This rate directly explains why the Total Amount Received (≈ $473M) exceeds the Total Funded Amount (≈ $435M) — the difference is interest income.
+
+### *5. What is the average DTI (Debt-to-Income Ratio) of borrowers in 2021?*
+```python
+avg_dti = df['dti'].mean()
+print("Average DTI:", avg_dti)
+```
+<img width="112" height="47" alt="avg_dti" src="https://github.com/user-attachments/assets/d239e2f5-fd2e-43fe-aaa0-f15c4714a333" />
+
+> Borrowers have an average DTI of 14.15%, which suggests that most customers carry a moderate debt burden relative to income.
+> This is a positive indicator for loan repayment capacity and aligns with the high percentage of Good Loans in the dataset.
+
+### 📌 B. Loan Quality & Risk KPIs
+These KPIs evaluate portfolio health, showing how many loans are performing well vs. posing financial risk.
+Good loans = Fully Paid + Current
+Bad loans = Charged Off
+
+### A. GOOD LOAN 
+
+#### Case Questions
+### 1. What percentage of loans are considered Good Loans?
+### 2. How many Good Loan Applications were approved?
+### 3. What is the Total Good Loan Funded Amount?
+### 4. How much Total Amount Received came from Good Loans?
+
+```python
+good_loans = df[df['loan_status'].isin(["Fully Paid", "Current"])]
+
+total_loan_applications = df['id'].count()
+
+good_loan_applications = good_loans['id'].count()
+good_loan_funded_amount = good_loans['loan_amount'].sum()
+good_loan_received = good_loans['total_payment'].sum()
+
+good_loan_funded_amount_millions = good_loan_funded_amount / 1_000_000
+good_loan_received_millions = good_loan_received / 1_000_000
+
+good_loan_percentage = (good_loan_applications / total_loan_applications) * 100
+
+print("Good Loan Applications:", good_loan_applications)
+print("Good Loan Funded Amount (in Millions): ${:.2f}M".format(good_loan_funded_amount_millions))
+print("Good Loan Total Received (in Millions): ${:.2f}M".format(good_loan_received_millions))
+print("Percentage of Good Loan Applications: {:.2f}%".format(good_loan_percentage))
+```
+<img width="566" height="290" alt="good_loan" src="https://github.com/user-attachments/assets/a1fe7599-cdcf-47ec-b5e8-5068b38fa5d3" />
+
+
+> 1. Good Loans make up 86.18% of total loan applications.
+> This indicates a strong loan portfolio, with the majority of borrowers either current or fully paid.
+> 2. There are 33,243 Good Loan Applications, confirming that most issued loans are performing well.
+> 3. Total funded amount for good loans is $370.22M, showing significant capital allocation to low-risk borrowers.
+> 4. A total of $435.79M has been received from good loans, confirming strong payment behavior and low delinquency.
+
+### B. BAD LOAN METRICS (Charged Off)
+#### Case Study
+### What percentage of loans are Bad Loans?
+### How many Bad Loan Applications were issued?
+### What is the Total Bad Loan Funded Amount?
+### How much Amount Received came from Bad Loans?
+
+```python
+bad_loans = df[df['loan_status'] == "Charged Off"]
+
+total_loan_applications = df['id'].count()
+
+bad_loan_applications = bad_loans['id'].count()
+bad_loan_funded_amount = bad_loans['loan_amount'].sum()
+bad_loan_received = bad_loans['total_payment'].sum()
+
+bad_loan_funded_amount_millions = bad_loan_funded_amount / 1_000_000
+bad_loan_received_millions = bad_loan_received / 1_000_000
+
+bad_loan_percentage = (bad_loan_applications / total_loan_applications) * 100
+
+print("Bad Loan Applications:", bad_loan_applications)
+print("Bad Loan Funded Amount (in Millions): ${:.2f}M".format(bad_loan_funded_amount_millions))
+print("Bad Loan Total Received (in Millions): ${:.2f}M".format(bad_loan_received_millions))
+print("Percentage of Bad Loan Applications: {:.2f}%".format(bad_loan_percentage))
+```
+<img width="567" height="278" alt="bad_loan" src="https://github.com/user-attachments/assets/0c4bd2cc-f5ad-498b-9dd0-251f73fb9b01" />
+
+> 1. Bad Loans account for 13.82% of total applications — a manageable level, but still significant enough to monitor closely.
+> 2. There are 5,333 Bad Loan Applications, indicating the number of borrowers who fully defaulted.
+> 3. Bad Loans have a funded amount of $65.53M, representing capital that is at high risk of non-recovery.
+> 4. Only $37.28M has been recovered from Charged Off loans — significantly lower than the funded amount, confirming a high loss exposure.
+
+### ✅ C. Time-Based KPIs (MTD & MoM)
+Tracking Month-to-Date (MTD) and Month-over-Month (MoM) performance helps identify growth, seasonality, and demand shifts in your loan portfolio.
+
+### 1. MTD Loan Applications (Dec 2021): How many loan applications have been received Month-to-Date (MTD) for December 2021?
+```python
+latest_issue_date = df['issue_date'].max()
+latest_year = latest_issue_date.year
+latest_month = latest_issue_date.month
+
+mtd_data = df[(df['issue_date'].dt.year == latest_year) & 
+              (df['issue_date'].dt.month == latest_month)]
+
+mtd_loan_applications = mtd_data['id'].count()
+
+print(f"MTD Loan Applications (for {latest_issue_date.strftime('%B %Y')}): {mtd_loan_applications}")
+```
+<img width="192" height="50" alt="mtd_loan" src="https://github.com/user-attachments/assets/4a64f164-0f13-4662-bfdd-082bb9759bff" />
+
+> Loan applications increased Month-over-Month (MoM) by 6.9%.
+> PMTD (Nov 2021) applications were 4,035, rising to 4,314 in December.
+> This steady upward trend indicates a growing demand for credit toward year-end.
+
+### 2. MTD Total Funded Amount: What is the total amount of loans funded Month-to-Date (MTD) for December 2021?
+```python
+latest_issue_date = df['issue_date'].max()
+latest_year = latest_issue_date.year
+latest_month = latest_issue_date.month
+
+mtd_data = df[(df['issue_date'].dt.year == latest_year) & 
+              (df['issue_date'].dt.month == latest_month)]
+
+mtd_total_funded_amount = mtd_data['loan_amount'].sum()
+mtd_total_funded_amount_millions = mtd_total_funded_amount/ 1000000
+print("MTD Total Funded Amount: ${:.2f}M". format(mtd_total_funded_amount_millions))
+```
+<img width="221" height="48" alt="mtd_funded" src="https://github.com/user-attachments/assets/e08718de-8027-49c8-af2d-e76b67ffdd6b" />
+
+> Total funded amount increased by 13.0% MoM.
+> Funding grew from $47.75M (PMTD) to $53.98M (MTD).
+> This reflects stronger loan disbursement activity in December, likely driven by holiday-season borrowing behavior.
+
+### 3. MTD Total Amount Received: How much loan repayment has been received Month-to-Date (MTD) for December 2021?
+```python
+latest_issue_date = df['issue_date'].max()
+latest_year = latest_issue_date.year
+latest_month = latest_issue_date.month
+
+mtd_data = df[(df['issue_date'].dt.year == latest_year) & 
+              (df['issue_date'].dt.month == latest_month)]
+
+mtd_total_amount_received = mtd_data['total_payment'].sum()
+mtd_total_amount_received_millions = mtd_total_amount_received/ 1000000
+print("MTD Total Amount received: ${:.2f}M". format(mtd_total_amount_received_millions))
+```
+<img width="238" height="47" alt="mtd_amount" src="https://github.com/user-attachments/assets/f6b2ced4-2341-49f5-8f2f-3cda9d67b595" />
+
+> Loan repayments improved by 15.8% MoM.
+> Collections increased from $50.13M (PMTD) to $58.07M (MTD).
+> This suggests either improved repayment behavior or a larger pool of active loans entering repayment in December.
+
+### 4. MTD Average Interest Rate: What is the average interest rate applied to loans Month-to-Date for December 2021?
+```sql
+SELECT ROUND(AVG(int_rate), 4) * 100 AS MTD_Avg_Int_Rate
+FROM financial_loan
+WHERE MONTH(issue_date) = 12
+  AND YEAR(issue_date) = 2021;
+```
+<img width="167" height="48" alt="mtd_avg" src="https://github.com/user-attachments/assets/fc91f921-a583-4a5b-a96d-1f9a2cce28c7" />
+
+> Average interest rates increased slightly by 3.5% MoM.
+> Rates rose from 11.94% (PMTD) to 12.4% (MTD), indicating a mild tightening in loan pricing or risk-based rate adjustments.
+
+### 5. MTD Average DTI: What is the Monthly-To-Date (MTD) average debt-to-income ratio for December 2021?
+```sql
+-- MTD Average DTI (Dec 2021)
+SELECT ROUND(AVG(dti), 4) * 100 AS MTD_Avg_DTI
+FROM financial_loan
+WHERE MONTH(issue_date) = 12
+  AND YEAR(issue_date) = 2021;
+```
+<img width="151" height="67" alt="mtd_dti" src="https://github.com/user-attachments/assets/4c53f12c-5c26-4e95-a8e5-4ad6515991f5" />
+
+> Average DTI increased by 2.7% MoM.
+> Borrower DTI shifted from 13.3% (PMTD) to 13.7% (MTD).
+> While still manageable, the rising DTI indicates borrowers are taking on slightly more debt relative to income.
+
+### D. Loan Performance Breakdown (Status, Term, Home Ownership, State)
+
+### Loan Status Breakdown
+```sql
+SELECT
+    loan_status,
+    COUNT(id) AS Total_Loan_Applications,
+    SUM(total_payment) AS Total_Amount_Received,
+    SUM(loan_amount) AS Total_Funded_Amount,
+    AVG(int_rate * 100) AS Interest_Rate,
+    AVG(dti * 100) AS DTI
+FROM financial_loan
+GROUP BY loan_status;
+```
+<img width="1346" height="243" alt="loan_status" src="https://github.com/user-attachments/assets/5e752542-92d2-4da5-8848-896308ab842c" />
+
+> This breakdown summarizes performance across all loan statuses—showing how many loans are fully paid, current, or charged off, and measuring their funded amounts, received payments, and average borrower risk metrics.
+
+### 2. Loan Term Breakdown
+```sql
+SELECT 
+    term AS Term, 
+    COUNT(id) AS Total_Loan_Applications,
+    SUM(loan_amount) AS Total_Funded_Amount,
+    SUM(total_payment) AS Total_Amount_Received
+FROM financial_loan
+GROUP BY term
+ORDER BY term;
+```
+<img width="572" height="70" alt="term" src="https://github.com/user-attachments/assets/0793445b-7aa0-49d1-82ea-f0f0cb04258b" />
+<img width="1333" height="771" alt="Funded_amount_term" src="https://github.com/user-attachments/assets/69e6d523-f468-4471-80fa-9679cc4c3061" />
+
+> Provides insights into how loan terms (e.g., 36 months vs. 60 months) impact customer engagement and repayment patterns.
+
+### 3. Purpose
+```sql
+SELECT 
+	purpose AS PURPOSE, 
+	COUNT(id) AS Total_Loan_Applications,
+	SUM(loan_amount) AS Total_Funded_Amount,
+	SUM(total_payment) AS Total_Amount_Received
+FROM financial_loan
+GROUP BY purpose
+ORDER BY purpose;
+```
+<img width="611" height="322" alt="purpose" src="https://github.com/user-attachments/assets/167d5ad7-aa40-4f2a-817c-9289afa900ed" />
+<img width="1756" height="736" alt="purpose_chart" src="https://github.com/user-attachments/assets/45039db0-e11e-42fe-b262-10982e45f463" />
+
+> 
+
+### 4. Home Ownership Breakdown
+```sql
+SELECT 
+    home_ownership AS Home_Ownership, 
+    COUNT(id) AS Total_Loan_Applications,
+    SUM(loan_amount) AS Total_Funded_Amount,
+    SUM(total_payment) AS Total_Amount_Received
+FROM financial_loan
+GROUP BY home_ownership
+ORDER BY home_ownership;
+```
+<img width="610" height="125" alt="home_ownership" src="https://github.com/user-attachments/assets/34ad4101-e0fd-418a-a980-657aa611f8b1" />
+<img width="1252" height="652" alt="Home_ownership_funded_amount" src="https://github.com/user-attachments/assets/1b195a84-ff36-457b-9150-59a59406fa38" />
+
+> Analyzes loan performance across different home-ownership categories, helping identify which borrower groups pose higher or lower financial risk.
+
+### 5. State-Level Loan Performance
+```sql
+SELECT 
+    address_state AS State, 
+    COUNT(id) AS Total_Loan_Applications,
+    SUM(loan_amount) AS Total_Funded_Amount,
+    SUM(total_payment) AS Total_Amount_Received
+FROM financial_loan
+GROUP BY address_state
+ORDER BY address_state;
+```
+<img width="527" height="628" alt="state" src="https://github.com/user-attachments/assets/fb6d91a7-50af-414a-b2ca-64200479e954" />
+<img width="1356" height="721" alt="Total_funded_amount_state" src="https://github.com/user-attachments/assets/bd120c70-d64c-4af0-8951-5d4451b69e7b" />
+
+> Useful for geographic risk analysis—identifying states with higher loan demand, stronger repayment, or elevated charge-off behavior.
+---
 ## 8. 🔍 Key Insights & Observations
 
 After cleaning, transforming, and analyzing the financial loan dataset using **SQL, Power BI, and Python**, several critical insights were uncovered:
