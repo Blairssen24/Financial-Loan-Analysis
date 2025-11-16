@@ -14,8 +14,10 @@ Comprehensive analysis of a bank loan portfolio to evaluate funding trends, repa
 5. [Dataset Overview](#5-dataset-overview)  
 6. [Data Preparation & Cleaning (SQL)](#6-data-preparation--cleaning-sql)  
 7. [KPIs &  Case Study Questions](#7-kpis--case-study-questions)  
-   - [Loan Portfolio KPIs](#loan-portfolio-kpis)  
-   - [Performance Metrics](#performance-metrics)  
+   - [Loan Portfolio Volume KPIs](#loan-portfolio-volume-kpis)  
+   - [Loan Quality & Risk KPIs](#loan-quality--risk-kpis)
+   - [Loan Quality & Risk KPIs](#loan-quality--risk-kpis)
+   - [Loan Performance Breakdown)](#loan-performance-breakdown) 
 8. [Key Insights & Observations](#8-key-insights--observations)  
 9. [Recommendations & Actionable Steps](#9-recommendations--actionable-steps)  
 10. [Power BI Dashboard Preview](#10-power-bi-dashboard-preview)  
@@ -397,7 +399,7 @@ WHERE MONTH(issue_date) = 12
 > Borrower DTI shifted from 13.3% (PMTD) to 13.7% (MTD).
 > While still manageable, the rising DTI indicates borrowers are taking on slightly more debt relative to income.
 
-### D. Loan Performance Breakdown (Status, Term, Home Ownership, State)
+### D. Loan Performance Breakdown (Status, Term, Purpose, Home Ownership, State)
 
 ### Loan Status Breakdown
 ```sql
@@ -563,7 +565,9 @@ Also tracks **Month-to-Date (MTD)** and **Previous MTD** performance to analyze 
 - Average Interest Rate  
 - Average DTI (Debt-to-Income Ratio)  
 - Good Loan % vs Bad Loan %  
-- MoM Funded Amount Growth  
+- MoM Funded Amount Growth
+  <img width="1332" height="746" alt="Bank_loan_summary" src="https://github.com/user-attachments/assets/26b42978-dbc8-474f-9227-fb18c8d68380" />
+<img width="1327" height="745" alt="Bank_loan_details" src="https://github.com/user-attachments/assets/df126eb2-b1f8-480a-9170-a8527d959867" />
 
 ---
 ## 11. 🏁 Conclusion
